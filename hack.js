@@ -33,7 +33,7 @@ function ind (el) { return (byTag(el, 'img')[0] || {}).width }
 
 // AJAX
 const HK_ERR_MSG = "Error. Request Failed.";
-const defaultSuccessFn = (ajax) => { location.reload(true); };
+const defaultSuccessFn = (ajax) => { /* nada */; };
 const defaultErrorFn   = (ajax) => { console.log(ajax); window.alert(HK_ERR_MSG); };
 
 function setHeaders(ajax, token) {
