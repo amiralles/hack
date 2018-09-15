@@ -1,6 +1,13 @@
-// By using this library you can do basic DOM manipulations (*)
-// and work with http requests/responses.
-// (*) The DOM part was borrowed from hn.js (hackernews js lib.)
+// ============================================================================
+// Hack.js
+// ============================================================================
+// A small JS library that will help you to do two thigs:
+// =====================================================
+// + Basic DOM manipulations.
+// + Work with AJAX requests/responses.
+// ============================================================================
+
+// DOM
 function $(id) { return document.getElementById(id); }
 function byClass (el, cl) { return el ? el.getElementsByClassName(cl) : [] }
 function byTag (el, tg) { return el ? el.getElementsByTagName(tg) : [] }
@@ -24,6 +31,7 @@ function noshow (el) { addClass(el, 'noshow') }
 function elShow (el) { remClass(el, 'noshow') }
 function ind (el) { return (byTag(el, 'img')[0] || {}).width }
 
+// AJAX
 const HK_ERR_MSG = "Error. Request Failed.";
 const defaultSuccessFn = (ajax) => { location.reload(true); };
 const defaultErrorFn   = (ajax) => { console.log(ajax); window.alert(HK_ERR_MSG); };
