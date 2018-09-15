@@ -1,4 +1,6 @@
-/* hackernews js library. */
+// By using this library you can do basic DOM manipulations (*)
+// and work with http requests/responses.
+// (*) The DOM part was borrowed from hn.js (hackernews js lib.)
 function $(id) { return document.getElementById(id); }
 function byClass (el, cl) { return el ? el.getElementsByClassName(cl) : [] }
 function byTag (el, tg) { return el ? el.getElementsByTagName(tg) : [] }
@@ -21,3 +23,75 @@ function vis(el, on) { if (el) { on ? remClass(el, 'nosee') : addClass(el, 'nose
 function noshow (el) { addClass(el, 'noshow') }
 function elShow (el) { remClass(el, 'noshow') }
 function ind (el) { return (byTag(el, 'img')[0] || {}).width }
+
+const HK_ERR_MSG = "Error. Request Failed.";
+const defaultSuccessFn = (ajax) => { location.reload(true); };
+const defaultErrorFn   = (ajax) => { console.log(ajax); window.alert(HK_ERR_MSG); };
+
+function setHeaders(ajax, token) {
+	ajax.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+	ajax.setRequestHeader("X-CSRF-Token", token);
+}
+
+function _openReq(method, url, flag, token) {
+	const ajax = new XMLHttpRequest();
+	ajax.open(method, url, flag);
+	setHeaders(ajax, token);
+	return ajax;
+}
+
+function _succeed(ajax) {
+	return ajax && ajax.readyState == 4 && ajax.status < 400; 
+}
+
+function getJson(url, onloadfn, token) {
+	const ajax = _openReq("GET", url, true, token);
+	ajax.onload = function() {
+		if (onloadfn) {
+			onloadfn(ajax);
+		}
+		else {
+			console.log("GET done.");
+		}
+	};
+	ajax.send();
+}
+
+function postJson(url, model, token, successFn, errorFn) {
+	const ajax  = _openReq("POST", url, true, token);
+	ajax.onload = function () {
+		if (_succeed(ajax)) {
+			if (successFn)
+				return successFn(ajax);
+			else
+				return defaultSuccessFn(ajax);
+		} 
+		else {
+			if (errorFn)
+				return errorFn(ajax);
+			else
+				return defaultErrorFn(ajax);
+		}
+	};
+	ajax.send(JSON.stringify(model));
+}
+
+function putJson(url, model, token, successFn, errorFn) {
+	const ajax = _openReq("PUT", url, true, token);
+	ajax.onload = function () {
+		if (_succeed(ajax)) {
+			if (successFn)
+				return successFn(ajax);
+			else
+				return defaultSuccessFn(ajax);
+		} 
+		else {
+			if (errorFn)
+				return errorFn(ajax);
+			else
+				return defaultErrorFn(ajax);
+		}
+	};
+	ajax.send(JSON.stringify(model));
+}
+
